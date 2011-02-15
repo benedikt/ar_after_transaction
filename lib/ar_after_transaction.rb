@@ -1,35 +1,21 @@
-require 'active_record'
-
 module ARAfterTransaction
+  extend ActiveSupport::Concern
+
   VERSION = File.read( File.join(File.dirname(__FILE__),'..','VERSION') ).strip
 
-  def self.included(base)
-    base.extend(ClassMethods)
-
-    class << base
-      alias_method_chain :transaction, :callbacks
-    end
-  end
-
   module ClassMethods
-    @@after_transaction_hooks = []
+    @@after_transaction_callbacks = []
 
-    def transaction_with_callbacks(&block)
-      clean = true
-      transaction_without_callbacks(&block)
-    rescue Exception
-      clean = false
-      raise
+    def transaction(&block)
+      super(&block)
+      delete_after_transaction_callbacks.map(&:call) unless transactions_open?
     ensure
-      unless transactions_open?
-        callbacks = delete_after_transaction_callbacks
-        callbacks.each(&:call) if clean
-      end
+      delete_after_transaction_callbacks unless transactions_open?
     end
 
     def after_transaction(&block)
       if transactions_open?
-        @@after_transaction_hooks << block
+        @@after_transaction_callbacks << block
       else
         yield
       end
@@ -46,8 +32,8 @@ module ARAfterTransaction
     end
 
     def delete_after_transaction_callbacks
-      result = @@after_transaction_hooks
-      @@after_transaction_hooks = []
+      result = @@after_transaction_callbacks
+      @@after_transaction_callbacks = []
       result
     end
   end
