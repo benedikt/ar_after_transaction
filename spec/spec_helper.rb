@@ -1,16 +1,29 @@
+$: << File.join(__FILE__, '..', 'lib')
+
 require 'rubygems'
-$LOAD_PATH << "lib"
-require "init"
-require "spec/setup_database"
+require 'bundler/setup'
 
-class FakeEnv
-  def initialize(env)
-    @env = env
-  end
+Bundler.require(:default, :dev)
 
-  def test?
-    @env == 'test'
+require 'ar_after_transaction'
+require 'logger'
+
+ActiveRecord::Base.establish_connection(
+  :adapter => "mysql", # need something that has transactions...
+  :database => "ar_after_transaction"
+)
+
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.connection.execute('DROP TABLE IF EXISTS users')
+
+ActiveRecord::Schema.define(:version => 1) do
+  create_table :users do |t|
+    t.string :name
+    t.timestamps
   end
+end
+
+class User < ActiveRecord::Base
 end
 
 module Rails
@@ -19,7 +32,7 @@ module Rails
   end
 
   def self.env=(env)
-    @@env = FakeEnv.new(env)
+    @@env = ActiveSupport::StringInquirer.new(env)
   end
 
   self.env = 'development'
