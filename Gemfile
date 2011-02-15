@@ -1,12 +1,12 @@
 source :rubygems
 
-gem 'activerecord', :require => 'active_record'
+gem 'activerecord', '~> 3.0', :require => 'active_record'
 
 group :dev do
   gem 'rake'
-  gem 'rspec', '~>1.3'
+  gem 'rspec', '~> 2.0'
   gem 'jeweler'
-  gem 'mysql'
+  gem 'ruby-mysql'
   gem 'activesupport', :require => 'active_support'
   gem 'sqlite3-ruby', :require => 'sqlite3'
 end
