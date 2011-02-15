@@ -24,15 +24,3 @@ end
 
 class User < ActiveRecord::Base
 end
-
-module Rails
-  def self.env
-    @@env
-  end
-
-  def self.env=(env)
-    @@env = ActiveSupport::StringInquirer.new(env)
-  end
-
-  self.env = 'development'
-end

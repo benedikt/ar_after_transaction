@@ -33,7 +33,6 @@ end
 
 describe ARAfterTransaction do
   before do
-    Rails.env = 'development'
     User.send(:transactions_open?).should == false
     User.test_stack.clear
     User.test_callbacks.clear
@@ -65,7 +64,7 @@ describe ARAfterTransaction do
   end
 
   it "executes when open transactions are normal" do
-    Rails.env = 'test'
+    User.stub!(:normally_open_transactions).and_return(1)
     User.test_callbacks = [:do_after, :do_normal]
     User.create!
     User.test_stack.should == [:after, :normal]

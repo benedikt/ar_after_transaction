@@ -21,14 +21,18 @@ module ARAfterTransaction
       end
     end
 
+    def normally_open_transactions
+      @@normally_open_transactions ||= 0
+    end
+
+    def normally_open_transactions=(transactions)
+      @@normally_open_transactions = transactions
+    end
+
     private
 
     def transactions_open?
       connection.open_transactions > normally_open_transactions
-    end
-
-    def normally_open_transactions
-      Rails.env.test? ? 1 : 0
     end
 
     def delete_after_transaction_callbacks
