@@ -14,7 +14,7 @@ Its great for just-in-time callbacks:
       end
 
       def oops
-        raise "do the rolback!"
+        raise "do the rollback!"
       end
     end
 
@@ -42,7 +42,7 @@ after_transaction will perform the given block imediatly if no transactions are 
     rails plugin install git://github.com/grosser/ar_after_transaction
     gem install ar_after_transaction
 
-after_transaction assumes zero open transactions. If you want to change this (for example when using transactional fixtures in your tests) you can do so by setting normally_open_transactions to the number of open transactions.
+after\_transaction assumes zero open transactions. If you want to change this (for example when using transactional fixtures in your tests) you can do so by setting normally\_open\_transactions to the number of open transactions.
 
     ActiveRecord::Base.normally_open_transactions = 1
 
