@@ -7,8 +7,9 @@ module ARAfterTransaction
     @@after_transaction_callbacks = []
 
     def transaction(&block)
-      super(&block)
-      delete_after_transaction_callbacks.map(&:call) unless transactions_open?
+      super(&block).tap do
+        delete_after_transaction_callbacks.map(&:call) unless transactions_open?
+      end
     ensure
       delete_after_transaction_callbacks unless transactions_open?
     end
