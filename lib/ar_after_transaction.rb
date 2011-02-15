@@ -43,4 +43,12 @@ module ARAfterTransaction
   end
 end
 
-ActiveRecord::Base.send(:include, ARAfterTransaction)
+if defined? Rails && defined? Rails::Railtie
+  class Railtie < Rails::Railtie
+    initializer "ar_after_transaction.initialize" do |app|
+      ::ActiveRecord::Base.send :include, ARAfterTransaction if defined? ::ActiveRecord::Base
+    end
+  end
+else
+  ::ActiveRecord::Base.send :include, ARAfterTransaction
+end
