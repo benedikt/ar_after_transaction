@@ -13,7 +13,6 @@ ActiveRecord::Base.establish_connection(
   :database => "ar_after_transaction"
 )
 
-ActiveRecord::Base.logger = Logger.new(STDOUT)
 ActiveRecord::Base.connection.execute('DROP TABLE IF EXISTS users')
 
 ActiveRecord::Schema.define(:version => 1) do
